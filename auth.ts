@@ -20,7 +20,6 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
     providers: [GitHub, Google],
-    secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
         async jwt({ token }) {
             if (token) {
