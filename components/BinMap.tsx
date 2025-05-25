@@ -96,6 +96,9 @@ const BinMap = () => {
                             url: bin.isOpen ? "/marker-open.png" : levelMarker(bin.level),
                             scaledSize: new window.google.maps.Size(30, 30),
                         }}
+                        onClick={() => {
+                            window.open(`https://www.google.com/maps?q=${bin.lat},${bin.lng}`, "_blank");
+                        }}
                     />
                 ))}
             </GoogleMap>
