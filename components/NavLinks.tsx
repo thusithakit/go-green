@@ -1,10 +1,11 @@
 "use client"
+import { Session } from 'next-auth';
 import Link from 'next/link'
 import { usePathname } from 'next/navigation';
 import React from 'react'
 
 interface NavLinksProps {
-    session: any;
+    session: Session | null;
 }
 
 const NavLinks = ({ session }: NavLinksProps) => {

@@ -18,7 +18,6 @@ const Navbar = async () => {
             </Link>
             <div className='flex content-center justify-end gap-5 flex-wrap'>
                 <NavLinks session={session} />
-                {/* {session && <SignOutButton />} */}
                 {session && session.user?.image && (
                     <DropdownMenu>
                         <DropdownMenuTrigger>

@@ -2,11 +2,11 @@
 import { useLongPress } from 'use-long-press';
 import { Trash } from 'lucide-react';
 import { toast } from 'sonner';
-import { onValue, ref, update } from 'firebase/database';
+import { onValue, push, ref, set, update } from 'firebase/database';
 import { database } from "@/app/lib/firebase-realtime";
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import SignUpButton from './SignUpButton';
+import { useRouter } from 'next/navigation';
 
 interface Bin {
     id: string;
@@ -17,12 +17,13 @@ interface Bin {
 }
 
 const BinUnlockButton = ({ binId }: { binId: string }) => {
-    let bin = "bin" + binId;
+    const bin = "bin" + binId;
     const binRef = ref(database, `/bins/${bin}`)
     const [binData, setBinData] = useState<Bin | null>(null)
     const [usersCanUnlock, setUsersCanUnlock] = useState(true);
     const { data } = useSession();
     const userRole = data?.user.role;
+    const router = useRouter();
     useEffect(() => {
         const unsubscribe = onValue(binRef, (snapshot) => {
             if (snapshot.exists()) {
@@ -32,18 +33,31 @@ const BinUnlockButton = ({ binId }: { binId: string }) => {
             }
         });
         return () => unsubscribe();
-    }, [binId])
+    }, [binId,binRef])
     useEffect(() => {
-
         if (binData && binData.level >= 85) {
             console.log(binData)
             setUsersCanUnlock(false);
         }
     }, [binData])
     const click = useLongPress(async () => {
+        if(!data){
+            toast("You must be logged in");
+            return router.push("/");
+        }
         try {
+            const disposalRef = push(ref(database, 'Disposals'));
+            const disposalId = disposalRef.key;
+            await set(disposalRef, {
+                userId: data.user.email,
+                binId: `bin${binId}`,
+                timestamp: new Date().toISOString(),
+                status: 'pending',
+                heightChange: null
+            });
             await update(binRef, {
                 isOpen: true,
+                currentDisposalId: disposalId
             })
             toast("Bin Unlocked!", { duration: 1000 })
         } catch (err) {

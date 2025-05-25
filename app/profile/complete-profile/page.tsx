@@ -2,12 +2,12 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { SessionProvider, useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation';
 import React, { Suspense, useState } from 'react'
 import { toast } from 'sonner';
 
-const page = () => {
+const Page = () => {
     const { data: session } = useSession();
     const router = useRouter();
     const [nic, setNic] = useState("");
@@ -39,7 +39,7 @@ const page = () => {
                         </div>
                     </CardContent>
                     <CardFooter>
-                        <p className='text-center relative w-full'>Let's track closest Garbage Bin!</p>
+                        <p className='text-center relative w-full'>Let&apos;s track closest Garbage Bin!</p>
                     </CardFooter>
                 </Card>
             </div>
@@ -47,4 +47,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

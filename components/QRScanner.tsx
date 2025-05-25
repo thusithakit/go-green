@@ -26,7 +26,7 @@ function QrCodeScanner() {
                         setScanned(true);
                         toast.success("QR Code Scanned Successfully!", { duration: 1000 });
                         await stopScannerRef.current?.();
-                        let scannedPathName = decodedText.replace("http://localhost:3000/", "/");
+                        const scannedPathName = decodedText.replace("http://localhost:3000/", "/");
                         router.push(scannedPathName);
                     },
                     (errorMessage) => console.warn("QR Scanner Error:", errorMessage)
@@ -57,13 +57,13 @@ function QrCodeScanner() {
             stopScanner();
             window.removeEventListener("popstate", handleBack);
         };
-    }, [scanned]);
+    }, [scanned,router]);
 
     useEffect(() => {
         return () => {
             stopScannerRef.current?.();
         };
-    }, [pathname]);
+    }, [pathname,router]);
 
     return <div id="reader" style={{ width: "100%" }}></div>;
 }

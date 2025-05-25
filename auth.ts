@@ -1,6 +1,5 @@
 import GitHub from "next-auth/providers/github"
 import Google from "next-auth/providers/google"
-import { FirestoreAdapter } from "@auth/firebase-adapter";
 import NextAuth from "next-auth";
 import { db } from "@/app/lib/firebase";
 
@@ -21,6 +20,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
     providers: [GitHub, Google],
+    secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
         async jwt({ token }) {
             if (token) {
