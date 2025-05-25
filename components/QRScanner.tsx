@@ -26,7 +26,12 @@ function QrCodeScanner() {
                         setScanned(true);
                         toast.success("QR Code Scanned Successfully!", { duration: 1000 });
                         await stopScannerRef.current?.();
-                        const scannedPathName = decodedText.replace("http://localhost:3000/", "/");
+                        let scannedPathName =decodedText
+                        if(decodedText.includes("https://go-green-khaki.vercel.app/")){
+                            scannedPathName = decodedText.replace("https://go-green-khaki.vercel.app/","/")
+                        }else {
+                            scannedPathName = decodedText.replace("http://localhost:3000/", "/");
+                        }
                         router.push(scannedPathName);
                     },
                     (errorMessage) => console.warn("QR Scanner Error:", errorMessage)
