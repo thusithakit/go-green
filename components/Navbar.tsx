@@ -29,7 +29,7 @@ const Navbar = async () => {
                         <DropdownMenuContent>
                             <DropdownMenuLabel>My Account</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>Profile</DropdownMenuItem>
+                            <DropdownMenuItem><Link href="/profile">View Profile</Link></DropdownMenuItem>
                             <DropdownMenuItem><SignOutButton /></DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

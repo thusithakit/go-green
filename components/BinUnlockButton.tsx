@@ -23,6 +23,8 @@ const BinUnlockButton = ({ binId }: { binId: string }) => {
     const [usersCanUnlock, setUsersCanUnlock] = useState(true);
     const { data } = useSession();
     const userRole = data?.user.role;
+    const userEmail = data?.user.email;
+    const userKey = userEmail?.replace(/\./g, '_');
     const router = useRouter();
     useEffect(() => {
         const unsubscribe = onValue(binRef, (snapshot) => {
@@ -46,7 +48,7 @@ const BinUnlockButton = ({ binId }: { binId: string }) => {
             return router.push("/");
         }
         try {
-            const disposalRef = push(ref(database, 'Disposals'));
+            const disposalRef = push(ref(database, `disposals/${userKey}`));
             const disposalId = disposalRef.key;
             await set(disposalRef, {
                 userId: data.user.email,
@@ -57,7 +59,8 @@ const BinUnlockButton = ({ binId }: { binId: string }) => {
             });
             await update(binRef, {
                 isOpen: true,
-                currentDisposalId: disposalId
+                currentDisposalId: disposalId,
+                currentUserKey: userKey
             })
             toast("Bin Unlocked!", { duration: 1000 })
         } catch (err) {
@@ -65,6 +68,9 @@ const BinUnlockButton = ({ binId }: { binId: string }) => {
             console.log(err);
         }
     }, { threshold: 1000 })
+    if (!data) {
+        return <p>Loading...</p>;
+    }
     return (
         <div>
             {(usersCanUnlock || userRole == "admin" || userRole == "collector") ? (
