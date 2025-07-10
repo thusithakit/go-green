@@ -24,6 +24,7 @@ export async function GET(req: NextRequest) {
     const data = await response.json();
     return Response.json({ address: data.display_name });
   } catch (err) {
+    console.log(err);
     return new Response(JSON.stringify({ error: 'Failed to fetch address' }), {
       status: 500,
     });

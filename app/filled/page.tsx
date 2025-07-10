@@ -10,7 +10,7 @@ interface Bin {
   level: number;
 }
 
-const page = () => {
+const Page = () => {
   const [filledBins, setFilledBins] = useState<Bin[]>([]);
   const [currentLocation, setCurrentLocation] = useState<{ lat: number, lng: number } | null>(null);
   const [addresses, setAddresses] = useState<Record<string, string>>({});
@@ -31,56 +31,60 @@ const page = () => {
     }
   }, []);
 
-useEffect(() => {
-  setIsLoading(true);
-  const binsRef = ref(database, 'bins');
+  useEffect(() => {
+    setIsLoading(true);
+    const binsRef = ref(database, 'bins');
 
-  const unsubscribe = onValue(binsRef, (snapshot) => {
-    const data = snapshot.val();
-    if (!data) {
-      setIsLoading(false);
-      return;
-    }
+    const unsubscribe = onValue(binsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (!data) {
+        setIsLoading(false);
+        return;
+      }
 
-    // ✅ Wrap async logic
-    (async () => {
-      const bins: Bin[] = Object.entries(data)
-        .map(([id, value]: [string, any]) => ({
-          id,
-          lat: value.lat,
-          lng: value.lng,
-          level: value.level,
-        }))
+      // ✅ Wrap async logic
+      (async () => {
+        const bins: Bin[] = Object.entries(data)
+        .map(([id, value]) => {
+          const bin = value as Partial<Bin>;
+          return {
+            id,
+            lat: bin.lat ?? 0,
+            lng: bin.lng ?? 0,
+            level: bin.level ?? 0,
+          };
+        })
         .filter((bin) => bin.level >= 70);
 
-      const addressPromises = bins.map(async (bin) => {
-        try {
-          const res = await fetch(
-            `/api/reverse-geocode?lat=${bin.lat}&lon=${bin.lng}`
-          );
-          const data = await res.json();
-          console.log('bin location', data);
-          return { id: bin.id, address: data.address || 'Unknown' };
-        } catch (err) {
-          console.error('Reverse geocode fetch failed:', err);
-          return { id: bin.id, address: 'Unknown' };
-        }
-      });
 
-      const resolved = await Promise.all(addressPromises);
-      const newAddresses: Record<string, string> = {};
-      resolved.forEach(({ id, address }) => {
-        newAddresses[id] = address;
-      });
+        const addressPromises = bins.map(async (bin) => {
+          try {
+            const res = await fetch(
+              `/api/reverse-geocode?lat=${bin.lat}&lon=${bin.lng}`
+            );
+            const data = await res.json();
+            console.log('bin location', data);
+            return { id: bin.id, address: data.address || 'Unknown' };
+          } catch (err) {
+            console.error('Reverse geocode fetch failed:', err);
+            return { id: bin.id, address: 'Unknown' };
+          }
+        });
 
-      setAddresses(newAddresses);
-      setFilledBins(bins);
-      setIsLoading(false);
-    })();
-  });
+        const resolved = await Promise.all(addressPromises);
+        const newAddresses: Record<string, string> = {};
+        resolved.forEach(({ id, address }) => {
+          newAddresses[id] = address;
+        });
 
-  return () => unsubscribe();
-}, []);
+        setAddresses(newAddresses);
+        setFilledBins(bins);
+        setIsLoading(false);
+      })();
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   // Handle Start Collecting
   const handleStartCollecting = () => {
@@ -125,4 +129,4 @@ useEffect(() => {
   );
 };
 
-export default page;
+export default Page;

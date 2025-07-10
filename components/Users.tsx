@@ -8,7 +8,7 @@ interface User {
   email?: string;
   name?: string;
   role?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 const Users = () => {
