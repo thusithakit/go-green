@@ -13,6 +13,13 @@ const NavLinks = ({ session }: NavLinksProps) => {
     const isActive = (href: string) => pathname === href || (pathname.startsWith(href) && href != "/");
     return (
         <nav className='relative flex content-center justify-end gap-5 flex-wrap'>
+            {(session?.user.role=="admin" || session?.user.role=="collector") && (
+                <Link href='/filled' className={`${isActive("/filled") ? "text-green-500 font-bold" : "font-semibold"}`}>Bins</Link>
+            ) }
+            {session?.user.role=="admin" && (
+                <Link href='/dashboard' className={`${isActive("/dashboard") ? "text-green-500 font-bold" : "font-semibold"}`}>Admin Dashboard</Link>
+            ) }
+
             <Link href="/" className={`${isActive("/") ? "text-green-500 font-bold" : "font-semibold"}`}>Home</Link>
             {!session && <Link href="/login" className={`${isActive("/login") ? "text-green-500 font-bold" : "font-semibold"}`}>Login</Link>}
         </nav>
