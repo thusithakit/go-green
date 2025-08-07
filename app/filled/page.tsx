@@ -2,6 +2,9 @@
 import { useEffect, useState } from 'react';
 import { ref, onValue } from 'firebase/database';
 import { database } from '@/app/lib/firebase-realtime';
+import { useSession } from 'next-auth/react';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
 interface Bin {
   id: string;
@@ -15,8 +18,28 @@ const Page = () => {
   const [currentLocation, setCurrentLocation] = useState<{ lat: number, lng: number } | null>(null);
   const [addresses, setAddresses] = useState<Record<string, string>>({});
   const [isLoading,setIsLoading]= useState<boolean>(false);
+  const user = useSession().data?.user;
+  const [assignedBins, setAssignedBins] = useState<string[]>([]);
+  const [assignedBinsLoaded, setAssignedBinsLoaded] = useState<boolean>(false);
 
-  // Get user's current location
+  
+  useEffect(()=>{
+    if (!user?.email) return;
+    const fetchAssignedBins = async () => {
+        try {
+            const binsRef = doc(db, "users",user.email);
+            const snapshot = await getDoc(binsRef);
+            const userData = snapshot.data();
+            setAssignedBins(userData?.bins || []);
+            setAssignedBinsLoaded(true);
+        } catch (err) {
+            console.error('Error fetching users:', err);
+        } finally {
+        }
+    };
+    fetchAssignedBins();
+  },[user]);
+
   useEffect(() => {
     setIsLoading(true);
     if (navigator.geolocation) {
@@ -34,15 +57,14 @@ const Page = () => {
   useEffect(() => {
     setIsLoading(true);
     const binsRef = ref(database, 'bins');
-
-    const unsubscribe = onValue(binsRef, (snapshot) => {
+    if(assignedBinsLoaded){
+          const unsubscribe = onValue(binsRef, (snapshot) => {
       const data = snapshot.val();
       if (!data) {
         setIsLoading(false);
         return;
       }
 
-      // ✅ Wrap async logic
       (async () => {
         const bins: Bin[] = Object.entries(data)
         .map(([id, value]) => {
@@ -54,7 +76,7 @@ const Page = () => {
             level: bin.level ?? 0,
           };
         })
-        .filter((bin) => bin.level >= 70);
+        .filter((bin) => bin.level >= 70 && (assignedBins.length>0 ? assignedBins.includes(bin.id): true));
 
 
         const addressPromises = bins.map(async (bin) => {
@@ -84,7 +106,8 @@ const Page = () => {
     });
 
     return () => unsubscribe();
-  }, []);
+    }
+  }, [assignedBinsLoaded, assignedBins.join(',')]);
 
   // Handle Start Collecting
   const handleStartCollecting = () => {
@@ -110,7 +133,9 @@ const Page = () => {
   }
   return (
     <div className="p-4 bg-white shadow-md rounded-md mt-15">
-      <h1 className="text-xl font-bold mb-4">Filled Bins: {filledBins.length}</h1>
+      <h1 className="text-2xl font-bold mb-4">Collector Dashboard</h1>
+      <p className="mb-4">Welcome, {user?.name || 'Collector'}!</p>
+      <h1 className="text-xl font-bold mb-4">Filled Bins Assigned to You: {filledBins.length}</h1>
       <ul className="mb-4">
         {filledBins.map((bin) => (
           <li key={bin.id} className="text-sm mb-1">

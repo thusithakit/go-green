@@ -122,4 +122,7 @@
   .bin-button{
     user-select: none !important;
   }
+  button {
+    @apply cursor-pointer;
+  }
 }
