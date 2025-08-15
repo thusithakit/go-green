@@ -1,11 +1,10 @@
 'use client'
 import { database } from "@/app/lib/firebase-realtime";
-import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
+import { GoogleMap, InfoWindow, Marker, useLoadScript } from "@react-google-maps/api";
 import { onValue, ref } from "firebase/database";
 import { useEffect, useState } from "react";
-const mapContainerStyle = { width: "100%", height: "100%" };
-let center = { lat: 6.9271, lng: 79.8612 };
-let userLocation: { lat: number; lng: number; } | null = null;
+
+
 interface Bin {
     id: string;
     lat: number;
@@ -14,6 +13,9 @@ interface Bin {
     level: number;
 }
 
+const mapContainerStyle = { width: "100%", height: "100%" };
+let center = { lat: 6.9271, lng: 79.8612 };
+let userLocation: { lat: number; lng: number; } | null = null;
 
 const levelMarker = (level: number) => {
     let imgUrl = ""
@@ -60,6 +62,7 @@ const BinMap = () => {
     });
 
     const [bins, setBins] = useState<Bin[]>([]);
+    const [selectedBin, setSelectedBin] = useState<Bin | null>(null);
 
     useEffect(() => {
         const binRef = ref(database, "/bins");
@@ -90,17 +93,37 @@ const BinMap = () => {
                         }}
                     />
                 )}
-                {bins.map((bin) => (
+                {Array.isArray(bins) && bins.map((bin) => (
                     <Marker key={bin.id} position={{ lat: bin.lat, lng: bin.lng }}
                         icon={{
                             url: bin.isOpen ? "/marker-open.png" : levelMarker(bin.level),
                             scaledSize: new window.google.maps.Size(30, 30),
                         }}
-                        onClick={() => {
-                            window.open(`https://www.google.com/maps?q=${bin.lat},${bin.lng}`, "_blank");
-                        }}
+                        onClick={() => setSelectedBin(bin)}
                     />
                 ))}
+                {selectedBin && (
+                    <InfoWindow
+                    position={{ lat: selectedBin.lat, lng: selectedBin.lng }}
+                    onCloseClick={() => setSelectedBin(null)}
+                    >
+                    <div className="p-2">
+                        <h3 className="font-bold">Bin Info</h3>
+                        <p>Current fill level: {selectedBin.level}%</p>
+                        <button
+                        className="mt-2 px-4 py-2 bg-green-500 text-white rounded w-full text-xl"
+                        onClick={() =>
+                            window.open(
+                            `https://www.google.com/maps?q=${selectedBin.lat},${selectedBin.lng}`,
+                            "_blank"
+                            )
+                        }
+                        >
+                        Navigate
+                        </button>
+                    </div>
+                    </InfoWindow>
+                )}
             </GoogleMap>
         </div>
     )
