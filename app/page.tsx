@@ -1,7 +1,6 @@
 import { auth } from "@/auth";
 import BinMap from "@/components/BinMap";
 import ScanQR from "@/components/ScanQR";
-import WebPushSetup from "@/components/WebPushSetup";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
