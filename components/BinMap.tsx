@@ -3,6 +3,7 @@ import { database } from "@/app/lib/firebase-realtime";
 import { GoogleMap, InfoWindow, Marker, useLoadScript } from "@react-google-maps/api";
 import { onValue, ref } from "firebase/database";
 import { useEffect, useState } from "react";
+import LoadingIndicator from "./LoadingIndicator";
 
 
 interface Bin {
@@ -60,7 +61,7 @@ const BinMap = () => {
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
     });
-
+    
     const [bins, setBins] = useState<Bin[]>([]);
     const [selectedBin, setSelectedBin] = useState<Bin | null>(null);
 
@@ -81,7 +82,7 @@ const BinMap = () => {
         getUserLocation();
         return () => unsubscribe();
     }, []);
-    if (!isLoaded) return <div>Loading...</div>;
+    if (!isLoaded) return <LoadingIndicator/>;
     return (
         <div className="relative h-[100vh] pt-[70px]">
             <GoogleMap mapContainerStyle={mapContainerStyle} zoom={14} center={center}>

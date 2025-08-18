@@ -19,7 +19,6 @@ const useUserDisposals = (userEmail: string | undefined) => {
     if (!userEmail) return;
 
     const userKey = userEmail.replace(/\./g, '_');
-    console.log("userkey",userKey)
     const disposalsRef = ref(database, `disposals/${userKey}`);
 
     const unsubscribe = onValue(disposalsRef, (snapshot) => {
