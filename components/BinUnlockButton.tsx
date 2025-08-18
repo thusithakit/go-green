@@ -63,6 +63,7 @@ const BinUnlockButton = ({ binId }: { binId: string }) => {
                 currentUserKey: userKey
             })
             toast("Bin Unlocked!", { duration: 1000 })
+            return router.push('/profile');
         } catch (err) {
             toast("Error Occurred!", { duration: 1000 })
             console.log(err);
@@ -74,9 +75,9 @@ const BinUnlockButton = ({ binId }: { binId: string }) => {
     return (
         <div>
             {(usersCanUnlock || userRole == "admin" || userRole == "collector") ? (
-                <div {...click()} className='cursor-pointer bin-button w-[200px] h-[200px] sm:w-[400px] sm:h-[400px] bg-green-300 rounded-full flex flex-col justify-center content-center flex-wrap gap-[10px] sm:gap-[20px] transition-colors duration-1000 delay-200 active:bg-green-500'>
+                <div {...click()} className='cursor-pointer bin-button w-[200px] h-[200px] sm:w-[400px] sm:h-[400px] bg-green-300 rounded-full flex flex-col justify-center items-center flex-wrap gap-[10px] sm:gap-[20px] transition-colors duration-1000 delay-200 active:bg-green-500'>
                     <Trash size={100} color='#fff' className='block mx-auto' />
-                    <h1 className='text-2xl sm:text-4xl font-bold text-white'>Hold Me</h1>
+                    <h1 className='text-xl sm:text-4xl font-bold text-white'>Unlock</h1>
                 </div>
             ) : (
                 <div>

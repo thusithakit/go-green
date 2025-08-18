@@ -7,17 +7,20 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import Image from 'next/image';
 import Logo from '@/public/logo.png';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
+import MobileMenuIcon from './MobileMenuIcon';
 
 const Navbar = async () => {
     const session = await auth();
     return (
-        <header className='fixed top-0 left-0 w-full z-10 bg-white flex justify-between content-center gap-5 px-[40px] py-2 flex-wrap border-b-green-200 border-4 border-t-0 border-x-0'>
+        <header className='fixed top-0 left-0 w-full z-10 bg-white flex justify-between items-center gap-5 md:px-[40px] px-[20px] py-2 flex-wrap border-b-green-200 border-4 border-t-0 border-x-0'>
             <Link href="/" className='flex relative flex-wrap items-center justify-center gap-[10px]'>
                 <Image src={Logo} alt='Go Green Logo' width={50} height={50} />
-                <h1 className='text-3xl font-bold'><span className='text-green-400'>Go</span>Green</h1>
+                <h1 className='text-2xl md:text-3xl font-bold'><span className='text-green-400'>Go</span>Green</h1>
             </Link>
-            <div className='flex content-center justify-end gap-5 flex-wrap'>
-                <NavLinks session={session} />
+            <div className='flex items-center justify-end gap-5 flex-wrap'>
+                <div className='hidden md:block'>
+                    <NavLinks session={session} />
+                </div>
                 {session && session.user?.image && (
                     <DropdownMenu>
                         <DropdownMenuTrigger>
@@ -34,6 +37,9 @@ const Navbar = async () => {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 )}
+                <span className='block md:hidden'>
+                    <MobileMenuIcon/>
+                </span>
             </div>
         </header>
     )
