@@ -4,6 +4,7 @@ import { GoogleMap, InfoWindow, Marker, useLoadScript } from "@react-google-maps
 import { onValue, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import LoadingIndicator from "./LoadingIndicator";
+import { ArrowBigRight } from "lucide-react";
 
 
 interface Bin {
@@ -109,19 +110,28 @@ const BinMap = () => {
                     onCloseClick={() => setSelectedBin(null)}
                     >
                     <div className="p-2">
-                        <h3 className="font-bold">Bin Info</h3>
+                        <h3 className="font-bold text-xl mb-1">Bin Info</h3>
                         <p>Current fill level: {selectedBin.level}%</p>
-                        <button
-                        className="mt-2 px-4 py-2 bg-green-500 text-white rounded w-full text-xl"
-                        onClick={() =>
-                            window.open(
-                            `https://www.google.com/maps?q=${selectedBin.lat},${selectedBin.lng}`,
-                            "_blank"
+                        {
+                            selectedBin.level < 85 && (
+                                <button
+                                    className="mt-2 px-4 py-2 bg-green-500 text-white rounded w-full text-xl"
+                                    onClick={() =>
+                                        window.open(
+                                        `https://www.google.com/maps?q=${selectedBin.lat},${selectedBin.lng}`,
+                                        "_blank"
+                                        )
+                                    }
+                                >
+                                    Navigate
+                                </button>
                             )
                         }
-                        >
-                        Navigate
-                        </button>
+                        {selectedBin.level >= 80 &&(
+                            <p className="text-sm text-gray-500 italic mt-2">
+                                <b>Note:</b> This bin is almost full, please consider using another bin.
+                            </p>
+                        )}
                     </div>
                     </InfoWindow>
                 )}
