@@ -15,6 +15,9 @@ const NavLinks = ({ session }: NavLinksProps) => {
     return (
         <nav className='relative flex flex-col md:flex-row content-center justify-end gap-5 md:flex-wrap'>
             <Link href="/" className={`${isActive("/") ? "text-green-500 font-bold" : "font-semibold"}`}>Home</Link>
+            {session?.user && (
+                <Link href='/profile' className={`${isActive("/profile") ? "text-green-500 font-bold" : "font-semibold"}`}>My Profile</Link>
+            ) }
             {(session?.user.role=="admin" || session?.user.role=="collector") && (
                 <Link href='/filled' className={`${isActive("/filled") ? "text-green-500 font-bold" : "font-semibold"}`}>Bins</Link>
             ) }

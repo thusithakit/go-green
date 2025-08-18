@@ -66,7 +66,7 @@ const UserPoints = ({userEmail}:{userEmail:string}) => {
             );
           })()}
       </div>
-      <div className="p-5 flex items-center justify-center flex-col gap-1 bg-gradient-to-tl from-green-200 to-green-50 w-[250px] rounded-xl border-2 border-green-500">
+      <div className="p-5 flex items-center justify-center flex-col gap-1 bg-gradient-to-tl from-green-200 to-green-50 w-full md:w-[250px] rounded-xl border-2 border-green-500">
         <h1 className="mb-2 text-xl font-semibold">Total Points</h1>
         <span className="font-bold text-5xl animate-bounce">{totalPoints}</span>
         <Image src={PointsIcon} width={100} height={100} alt="Points icon"/>
@@ -82,7 +82,7 @@ const UserPoints = ({userEmail}:{userEmail:string}) => {
                 </span>
             </CardHeader>
             <CardContent>
-              <p className="text-xl font-medium">Bin Unlocked Date and Time: {new Date(disposal.timestamp).toLocaleString()}</p>
+              <p className="text-md font-medium mb-2">Bin Unlocked Date and Time: <br/>{new Date(disposal.timestamp).toLocaleString()}</p>
               <p className="text-xl font-medium">Points Received: {disposal.points}</p>
             </CardContent>
             {disposal.points === 0 && (
