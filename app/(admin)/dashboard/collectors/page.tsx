@@ -2,6 +2,7 @@
 
 import { db } from "@/app/lib/firebase";
 import { database } from "@/app/lib/firebase-realtime";
+import LoadingIndicator from "@/components/LoadingIndicator";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { onValue, ref } from "firebase/database";
@@ -71,7 +72,7 @@ const Page = () => {
     if(loading){
     return (
       <div className='mt-20 w-full h-auto flex items-center justify-center'>
-        <h2 className='text-2xl animate-ping'>Loading....</h2>
+        <LoadingIndicator/>
       </div>
     )
   }

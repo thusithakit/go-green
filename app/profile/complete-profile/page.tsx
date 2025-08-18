@@ -1,4 +1,5 @@
 'use client'
+import LoadingIndicator from '@/components/LoadingIndicator';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -25,7 +26,7 @@ const Page = () => {
     }
 
     return (
-        <Suspense fallback="Loading.....">
+        <Suspense fallback={<LoadingIndicator/>}>
             <div className='relative h-full w-full flex content-center justify-center flex-wrap pt-[70px]'>
                 <Card className="max-w-[350px] w-full mt-[50px]">
                     <CardHeader>

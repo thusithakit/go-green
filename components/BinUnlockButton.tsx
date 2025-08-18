@@ -7,6 +7,7 @@ import { database } from "@/app/lib/firebase-realtime";
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import LoadingIndicator from './LoadingIndicator';
 
 interface Bin {
     id: string;
@@ -70,7 +71,7 @@ const BinUnlockButton = ({ binId }: { binId: string }) => {
         }
     }, { threshold: 1000 })
     if (!data) {
-        return <p>Loading...</p>;
+        return <LoadingIndicator/>;
     }
     return (
         <div>

@@ -2,6 +2,7 @@
 import { db } from '@/app/lib/firebase';
 import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
+import LoadingIndicator from './LoadingIndicator';
 
 interface User {
   id: string;
@@ -62,7 +63,7 @@ const Users = () => {
   }, []);
 
   if (loading) {
-    return <p className="text-center text-gray-500">Loading users...</p>;
+    return <LoadingIndicator/>;
   }
 
   if (error) {

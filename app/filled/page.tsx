@@ -5,6 +5,7 @@ import { database } from '@/app/lib/firebase-realtime';
 import { useSession } from 'next-auth/react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
+import LoadingIndicator from '@/components/LoadingIndicator';
 
 interface Bin {
   id: string;
@@ -127,7 +128,7 @@ const Page = () => {
   if(isLoading){
     return (
       <div className='mt-20 w-full h-auto flex items-center justify-center'>
-        <h2 className='text-2xl animate-ping'>Loading....</h2>
+        <LoadingIndicator/>
       </div>
     )
   }
