@@ -13,6 +13,7 @@ interface Disposal {
 
 const useUserDisposals = (userEmail: string | undefined) => {
   const [userDisposals, setUserDisposals] = useState<Disposal[]>([]);
+  const [isLoading,setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (!userEmail) return;
@@ -25,12 +26,13 @@ const useUserDisposals = (userEmail: string | undefined) => {
       const data: Record<string, Disposal> = snapshot.val() || {};
       const disposals = Object.values(data);
       setUserDisposals(disposals);
+      setIsLoading(false);
     });
 
     return () => unsubscribe();
   }, [userEmail]);
 
-  return userDisposals;
+  return {data:userDisposals, isLoading};
 };
 
 export default useUserDisposals;

@@ -1,5 +1,6 @@
 'use client'
 import useUserDisposals from "@/app/hooks/useUserDisposals";
+import LoadingIndicator from "./LoadingIndicator";
 
 interface Disposal {
   userId: string;
@@ -11,7 +12,8 @@ interface Disposal {
 }
 
 const UserPoints = ({userEmail}:{userEmail:string}) => {
-  const userDisposals = useUserDisposals(userEmail);
+  const { data:userDisposals, isLoading } = useUserDisposals(userEmail);
+
   console.log("disposals",userDisposals);
   const convertToPoints = (heightChange:number | null)=>{
     if(heightChange){
@@ -26,6 +28,9 @@ const UserPoints = ({userEmail}:{userEmail:string}) => {
   const totalPoints = modifiedDisposals.reduce((acc, disposal: Disposal) => {
         return acc + disposal.points;
       }, 0);
+  if (isLoading) {
+    return <LoadingIndicator/>;
+  }
   return (
     <>
       <h1>Your Total Points: <span className="text-green-500 font-bold mb-4">{totalPoints}</span></h1>
