@@ -4,7 +4,6 @@ import { GoogleMap, InfoWindow, Marker, useLoadScript } from "@react-google-maps
 import { onValue, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import LoadingIndicator from "./LoadingIndicator";
-import { ArrowBigRight } from "lucide-react";
 
 
 interface Bin {
