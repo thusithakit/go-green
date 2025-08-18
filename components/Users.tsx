@@ -71,12 +71,11 @@ const Users = () => {
   }
 
   return (
-    <div className="p-4 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">All Registered Users</h1>
+    <div className="mx-auto">
       {users.length === 0 ? (
         <p className="text-center text-gray-600">No users found.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {users.map((user) => (
             <div key={user.id} className="border p-4 rounded-lg shadow-sm bg-white">
               <p><strong>ID:</strong> {user.id}</p>
@@ -86,7 +85,7 @@ const Users = () => {
               {user.role !== 'admin' && (
                 <button
                     onClick={() => toggleUserRole(user.id, user.role || 'user')}
-                    className="mt-2 px-4 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    className="mt-2 px-4 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors duration-300"
                 >
                     {buttonLoading[user.id] ? 'Updating...': `Change to ${user.role === 'user'?'Collector':'User'}`}
                 </button>
