@@ -1,6 +1,5 @@
 import { auth } from '@/auth'
 import Users from '@/components/Users';
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ManageAssignedBins from '@/components/ManageAssignedBins';
