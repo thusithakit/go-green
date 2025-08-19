@@ -1,13 +1,15 @@
 import admin from "firebase-admin";
 import { Message } from "firebase-admin/messaging";
-import { readFileSync } from "fs";
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
 
-  const serviceAccountPath = path.join(process.cwd(), "/service_key.json");
+  // const serviceAccountPath = path.join(process.cwd(), "/service_key.json");
 
 if (!admin.apps.length) {
-  const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, "utf8"));
+  // const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, "utf8"));
+  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY as string);
+  serviceAccount.private_key = serviceAccount.private_key
+      .replace(/\\n/g, '\n')
+      .trim();
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
   });
