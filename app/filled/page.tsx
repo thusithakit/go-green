@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import LoadingIndicator from '@/components/LoadingIndicator';
+import { useRouter } from 'next/navigation';
 
 interface Bin {
   id: string;
@@ -19,19 +20,28 @@ const Page = () => {
   const [currentLocation, setCurrentLocation] = useState<{ lat: number, lng: number } | null>(null);
   const [addresses, setAddresses] = useState<Record<string, string>>({});
   const [isLoading,setIsLoading]= useState<boolean>(false);
-  const user = useSession().data?.user;
   const [assignedBins, setAssignedBins] = useState<string[]>([]);
   const [assignedBinsLoaded, setAssignedBinsLoaded] = useState<boolean>(false);
+  const router = useRouter();
+  const {data:session,status} = useSession();
 
   
   useEffect(()=>{
-    if (!user?.email) return;
+    if (status === "loading") return;
+    if (!session || (session.user.role !== "admin" && session.user.role !== "collector")) {
+      router.push("/");
+      return;
+    }
     const fetchAssignedBins = async () => {
         try {
-            const binsRef = doc(db, "users",user.email);
+            const binsRef = doc(db, "users",session.user.email);
             const snapshot = await getDoc(binsRef);
-            const userData = snapshot.data();
-            setAssignedBins(userData?.bins || []);
+            if (snapshot.exists()) {
+              const userData = snapshot.data();
+              setAssignedBins(userData?.bins || []);
+            } else {
+              setAssignedBins([]);
+            }
             setAssignedBinsLoaded(true);
         } catch (err) {
             console.error('Error fetching users:', err);
@@ -39,7 +49,7 @@ const Page = () => {
         }
     };
     fetchAssignedBins();
-  },[user]);
+  },[session,status,router]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -125,7 +135,7 @@ const Page = () => {
 
     window.open(gmapsUrl, '_blank');
   };
-  if(isLoading){
+  if(isLoading || status === "loading"){
     return (
       <div className='mt-20 w-full h-auto flex items-center justify-center'>
         <LoadingIndicator/>
@@ -135,7 +145,7 @@ const Page = () => {
   return (
     <div className="p-4 bg-white shadow-md rounded-md mt-15">
       <h1 className="text-2xl font-bold mb-4">Collector Dashboard</h1>
-      <p className="mb-4">Welcome, {user?.name || 'Collector'}!</p>
+      <p className="mb-4">Welcome, {session?.user.name || 'Collector'}!</p>
       <h1 className="text-xl font-bold mb-4">Filled Bins Assigned to You: {filledBins.length}</h1>
       <ul className="mb-4">
         {filledBins.map((bin) => (

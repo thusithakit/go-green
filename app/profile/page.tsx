@@ -1,11 +1,15 @@
 import { auth } from "@/auth";
 import LoadingIndicator from "@/components/LoadingIndicator";
+import SignUpButton from "@/components/SignUpButton";
 import UserPoints from "@/components/UserPoints";
 import { Suspense } from "react";
 
 const page = async () => {
     const session = await auth();
     const userEmail = session?.user?.email;
+    if (!session || !session?.user) {
+    return <SignUpButton callbackUrl="/profile" />
+    }
     return (
         <>
             <div className="mt-20 px-5">
