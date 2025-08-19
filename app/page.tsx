@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import BinMap from "@/components/BinMap";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import ScanQR from "@/components/ScanQR";
+import TestNotification from "@/components/TestNotification";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -14,7 +15,7 @@ export default async function Home() {
   return (
     <div className="relative">
       <div className="text-2xl font-bold">
-        {/* {session ? <h1>Hello, {session?.user?.name}!</h1> : <h1>Please Login to Enjoy GoGreen</h1>} */}
+        {session && <TestNotification userId={session.user.email} />}
         <Suspense fallback={<LoadingIndicator/>}>
           <BinMap />
         </Suspense>
