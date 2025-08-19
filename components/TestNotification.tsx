@@ -6,23 +6,23 @@ import { Button } from "./ui/button";
 const TestNotification = ({userId}:{userId:string}) => {
     const { token, notificationPermissionStatus } = useFcmToken(userId);
 
-  const handleTestNotification = async () => {
-    const response = await fetch("/api/send-notification", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        token: token,
-        title: "Test Notification",
-        message: "This is a test notification",
-        link: "/profile",
-      }),
-    });
+    const handleTestNotification = async () => {
+        const response = await fetch("/api/send-notification", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            token: token,
+            title: "Test Notification",
+            message: "This is a test notification",
+            link: "/profile",
+        }),
+        });
 
-    const data = await response.json();
-    console.log(data);
-  };
+        const data = await response.json();
+        console.log(data);
+    };
   return (
     <div>
       <h1 className="text-4xl mb-4 font-bold">Firebase Cloud Messaging Demo</h1>
