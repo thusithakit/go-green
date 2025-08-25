@@ -20,7 +20,7 @@ const UserPoints = ({userEmail}:{userEmail:string}) => {
   console.log("disposals",userDisposals);
   const convertToPoints = (heightChange:number | null)=>{
     if(heightChange){
-      const points = Math.floor(heightChange/10)
+      const points = Math.round(heightChange/10)
       return points;
     }
     else return 0;
